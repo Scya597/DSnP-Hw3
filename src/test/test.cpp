@@ -44,9 +44,47 @@ main(int argc, char** argv)
    cout << " Print table " << endl;
    cout << "========================" << endl;
    cout << dbtbl << endl;
+   cout << "========================" << endl;
 
-   // TODO
-   // Insert what you want to test here by calling DBTable's member functions
+  // TODO
+  // Insert what you want to test here by calling DBTable's member functions
+   cout << dbtbl[0] << endl;
+   cout << dbtbl[1] << endl;
+   cout << "MAX 0: " << dbtbl.getMax(0) << endl;
+   cout << "MIN 0: " << dbtbl.getMin(0) << endl;
+   cout << "SUM 0: " << dbtbl.getSum(0) << endl;
+   cout << "COUNT 0: " << dbtbl.getCount(0) << endl;
+   cout << "AVE 0: "<< dbtbl.getAve(0) << endl;
+   cout << "PRINTCOL 0: ";
+   dbtbl.printCol(0);
+   cout << "MAX 1: " << dbtbl.getMax(1) << endl;
+   cout << "MIN 1: " << dbtbl.getMin(1) << endl;
+   cout << "SUM 1: " << dbtbl.getSum(1) << endl;
+   cout << "COUNT 1: " << dbtbl.getCount(1) << endl;
+   cout << "AVE 1: "<< dbtbl.getAve(1) << endl;
+   cout << "PRINTCOL 1: ";
+   dbtbl.printCol(1);
+   DBSort mysort;
+   mysort.pushOrder(3);
+   mysort.pushOrder(2);
+   dbtbl.sort(mysort);
+   cout << dbtbl << endl;
+   cout << "========================" << endl;
 
+   dbtbl.delRow(1);
+   cout << dbtbl << endl;
+   cout << "========================" << endl;
+   dbtbl.delCol(1);
+   cout << dbtbl << endl;
+   cout << "========================" << endl;
+
+   vector<int> d = {1,2,3,4,5};
+   dbtbl.addCol(d);
+   cout << dbtbl << endl;
+   cout << "========================" << endl;
+
+   dbtbl.reset();
+   cout << dbtbl << endl;
+   cout << "========================" << endl;
    return 0;
 }
