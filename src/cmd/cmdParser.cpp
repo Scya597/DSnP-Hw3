@@ -29,7 +29,15 @@ bool
 CmdParser::openDofile(const string& dof)
 {
    // TODO...
+   _dofileStack.push(_dofile);
    _dofile = new ifstream(dof.c_str());
+   if (_dofileStack.size() > 1024) {
+     return false;
+   } else if (!_dofile->is_open()) {
+     _dofile = _dofileStack.top();
+     _dofileStack.pop();
+     return false;
+   }
    return true;
 }
 
@@ -39,7 +47,14 @@ CmdParser::closeDofile()
 {
    assert(_dofile != 0);
    // TODO...
+   _dofile->close();
    delete _dofile;
+   if (!_dofileStack.empty()) {
+     _dofile = _dofileStack.top();
+     _dofileStack.pop();
+   } else {
+     _dofile = 0;
+   }
 }
 
 // Return false if registration fails
@@ -98,6 +113,10 @@ void
 CmdParser::printHelps() const
 {
    // TODO...
+   for (CmdMap::const_iterator it = _cmdMap.begin(); it != _cmdMap.end(); ++it) {
+     it->second->help();
+   }
+   cout << endl;
 }
 
 void
@@ -140,12 +159,25 @@ CmdParser::parseCmd(string& option)
 
    // TODO...
    assert(str[0] != 0 && str[0] != ' ');
-   return NULL;
+   string cmd;
+   size_t n = myStrGetTok(str, cmd);
+   CmdExec* command = getCmd(cmd);
+   if (command == 0) {
+     if(getCmd(cmd) == 0) cerr << "Illegal command!! (" << cmd << ')' << endl;
+     return NULL;
+   } else {
+     if (n != string::npos) {
+       option = str.substr(n + 1);
+     } else {
+       option = "";
+     }
+     return command;
+   }
 }
 
 // This function is called by pressing 'Tab'.
 // It is to list the partially matched commands.
-// "str" is the partial string before current cursor position. It can be 
+// "str" is the partial string before current cursor position. It can be
 // a null string, or begin with ' '. The beginning ' ' will be ignored.
 //
 // Several possibilities after pressing 'Tab'
@@ -289,6 +321,13 @@ CmdParser::getCmd(string cmd)
 {
    CmdExec* e = 0;
    // TODO...
+   for (CmdMap::const_iterator it = _cmdMap.begin(); it != _cmdMap.end(); ++it) {
+     string command= it->first;
+     string option = it->second->getOptCmd();
+     if (myStrNCmp(command + option, cmd, it->first.size()) == 0) {
+       e = it->second;
+     }
+   }
    return e;
 }
 
@@ -368,4 +407,3 @@ CmdExec::errorOption(CmdOptionError err, const string& opt) const
    }
    return CMD_EXEC_ERROR;
 }
-
