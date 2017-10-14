@@ -34,6 +34,7 @@ ostream& operator << (ostream& os, const DBRow& r)
      if (j < m-1)
        cout << ' ';
    }
+   cout << endl;
    return os;
 }
 
@@ -50,8 +51,7 @@ ostream& operator << (ostream& os, const DBTable& t)
          cout << setw(6) << t[i][j];
        }
      }
-     if (i < n-1)
-       cout << endl;
+     cout << endl;
    }
    return os;
 }
@@ -281,10 +281,9 @@ DBTable::printCol(size_t c) const
      }
      if (i < n-1) {
        cout << ' ';
-     } else {
-       cout << endl;
      }
    }
+   cout << endl;
 }
 
 void
